@@ -39,9 +39,21 @@ private:
     double r;
 
 public:
-    void input();          
-    double area();         
-    double circumference();
+    void input() {
+        setName("Toirog");
+        cout << "Toirog-iin tuv koordinat (x y): ";
+        cin >> x >> y;
+
+        cout << "Toirog-iin Radius oruul: ";
+        cin >> r;
+    }
+        
+    double area() {
+        return M_PI * r * r;
+    }        
+    double circumference() {
+        return 2 * M_PI * r;
+    }
 };
 
 
@@ -93,13 +105,37 @@ public:
 // Triangle класс 
 class Triangle : public Shape2D {
 private:
+    double x1, y1; // дээд орой
+    double x2, y2, x3, y3; // бусад орой
     double side;
     
 
 public:
-    void input();      
-    double area();     
-    double perimeter();
+    void input(){
+        cout << "Zuv gurvaljingiin taliin urt: ";
+        cin >> side;
+
+        cout << "Deed oroin koordinat (x y): ";
+        cin >> x1 >> y1;
+
+        double h = sqrt(3) / 2 * side;
+
+        // бусад оройг тооцоолно
+        x2 = x1 - side / 2;
+        y2 = y1 - h;
+
+        x3 = x1 + side / 2;
+        y3 = y1 - h;
+
+        setName("Zuv Gurvaljin");
+    }
+        
+    double area() { //Гурвалжны талбайг олох
+        return (sqrt(3) / 4) * side * side;
+    }
+    double perimeter() { //Гурвалжны периметрийг олох
+        return 3 * side;
+    }
 };
 
 
