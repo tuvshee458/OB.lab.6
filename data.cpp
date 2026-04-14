@@ -1,6 +1,7 @@
 #include <iostream>   // оролт гаралт
 #include <cmath>      // математик функц
 #include <windows.h>  // монгол текст
+#include <algorithm> // sort функц
 using namespace std;
 
 
@@ -165,9 +166,17 @@ int main() {
     SetConsoleCP(65001);
 
     // объектууд
-    Circle c;
-    Square s;
-    Triangle t;
+    Circle  c1(0, 0, 3);    // радиус 3
+    Circle  c2(1, 1, 5);    // радиус 5
+    Circle  c3(2, 2, 1.5);  // радиус 1.5
+
+    Square  s1(0, 0, 4);    // тал 4
+    Square  s2(1, 0, 2);    // тал 2
+    Square  s3(0, 1, 6);    // тал 6
+
+    Triangle t1(0, 0, 5);   // тал 5
+    Triangle t2(1, 0, 3);   // тал 3
+    Triangle t3(0, 1, 7);   // тал 7
 
     // input авах
     c.input();
@@ -175,7 +184,12 @@ int main() {
     t.input();
 
     // Shape pointer массив
-    Shape* shapes[3];
+    Shape* shapes[9] = { &c1, &c2, &c3, &s1, &s2, &s3, &t1, &t2, &t3 };
+
+    // талбайгаар өсөхөөр эрэмбэлэх 
+    sort(shapes, shapes + 9, [](Shape* a, Shape* b) {
+        return a->area() < b->area();
+    });
 
     // объектуудын хаяг оноох
     shapes[0] = &c;
