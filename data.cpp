@@ -1,217 +1,184 @@
-#include <iostream>   // оролт гаралт
-#include <cmath>      // математик функц
-#include <windows.h>  // монгол текст
-#include <algorithm> // sort функц
+// оролт гаралт хийхэд хэрэгтэй сан (cout, endl)
+#include <iostream>
+
+// математик функц ашиглах сан (sqrt функц)
+#include <cmath>
+
+// эрэмбэлэхэд хэрэгтэй sort сан
+#include <algorithm>
+
+// std namespace ашиглах
 using namespace std;
 
 
 // ЭХ КЛАСС 
-
-// Shape ерөнхий класс (abstract)
+// бүх дүрсний суурь abstract класс тодорхойлж байна
 class Shape {
 protected:
-    string name; 
+    // дүрсний нэр хадгалах хувьсагч (дэд классууд ашиглах боломжтой)
+    string name;
 
 public:
-    // байгуулагч - нэр онооно
+    // байгуулагч функц - класс үүсэхэд нэр онооно
     Shape(string n = "Unknown") {
-        name = n;
+        name = n; // параметрээр ирсэн утгыг name-д хадгалж байна
     }
 
-    // override 
+    // талбай олох virtual функц (заавал дэд класс хэрэгжүүлнэ)
     virtual double area() = 0;
 
-    // периметр
+    // периметр олох virtual функц (заавал override хийнэ)
     virtual double perimeter() = 0;
 
-    // нэр буцаах
+    // дүрсний нэрийг буцаах функц
     string getName() {
         return name;
     }
 };
 
 
-// 2D SHAPE
-
+// SHAPE2D
+// 2 хэмжээст дүрсүүдийн дунд класс (Shape-оос удамшиж байна)
 class Shape2D : public Shape {
 protected:
-    double x, y; // координат
+    // координат хадгалах хувьсагчид (x, y)
+    double x, y;
 
 public:
-    // байгуулагч - эх классыг дуудна
-    Shape2D(string n = "Shape2D", double x0 = 0, double y0 = 0)
-        : Shape(n) {
-        x = x0;
-        y = y0;
-    }
+    // байгуулагч функц - эх классын constructor дуудаж байна
+    Shape2D(string n, double x0, double y0)
+        : Shape(n), x(x0), y(y0) {} // Shape руу name дамжуулж байна
 };
 
 
-// CIRCLE 
+//  CIRCLE
 
+// Circle класс Shape2D-оос удамшиж байна
 class Circle : public Shape2D {
 private:
-    double r; // радиус
+    // радиус хадгалах хувьсагч (зөвхөн Circle дотор ашиглана)
+    double r;
 
 public:
-    // default байгуулагч
-    Circle() : Shape2D("Circle", 0, 0) {
-        r = 0;
-    }
+    // байгуулагч - координат ба радиус авна
+    Circle(double x, double y, double radius)
+        : Shape2D("Circle", x, y), r(radius) {} // эх класст name дамжуулж байна
 
-    // хэрэглэгчээс утга авах
-    void input() {
-        cout << "Toirog tuv (x y): ";
-        cin >> x >> y;
-
-        cout << "Radius: ";
-        cin >> r;
-    }
-
-    // талбай (override)
+    // талбай бодох функц (Shape-ийн функцыг override хийж байна)
     double area() override {
-        return M_PI * r * r;
+        return 3.14159 * r * r; // πr² томьёо
     }
 
-    // урт (override)
+    // периметр бодох функц
     double perimeter() override {
-        return 2 * M_PI * r;
+        return 2 * 3.14159 * r; // 2πr
     }
 };
 
 
-// SQUARE
+// SQUARE 
 
+// Square класс Shape2D-оос удамшиж байна
 class Square : public Shape2D {
 private:
-    double side; // тал
+    // квадратын талын урт
+    double side;
 
 public:
-    // default байгуулагч
-    Square() : Shape2D("Square", 0, 0) {
-        side = 0;
-    }
+    // байгуулагч - координат ба талын урт авна
+    Square(double x, double y, double s)
+        : Shape2D("Square", x, y), side(s) {}
 
-    // оролт авах
-    void input() {
-        cout << "Square zuun deed (x y): ";
-        cin >> x >> y;
-
-        cout << "Side: ";
-        cin >> side;
-    }
-
-    // талбай
+    // талбай бодох функц
     double area() override {
-        return side * side;
+        return side * side; // a²
     }
 
-    // периметр
+    // периметр бодох функц
     double perimeter() override {
-        return 4 * side;
+        return 4 * side; // 4a
     }
 };
 
 
-// TRIANGLE
+// TRIANGLE 
 
+// Triangle класс Shape2D-оос удамшиж байна
 class Triangle : public Shape2D {
 private:
-    double side; // тал
-    double x1, y1, x2, y2, x3, y3; // оройнууд
+    // гурвалжны талын урт
+    double side;
 
 public:
-    // default байгуулагч
-    Triangle() : Shape2D("Triangle", 0, 0) {
-        side = 0;
-    }
+    // байгуулагч - координат ба тал авна
+    Triangle(double x, double y, double s)
+        : Shape2D("Triangle", x, y), side(s) {}
 
-    // оролт авах
-    void input() {
-        cout << "Triangle side: ";
-        cin >> side;
-
-        cout << "Top point (x y): ";
-        cin >> x1 >> y1;
-
-        // өндрийг бодох
-        double h = sqrt(3) / 2 * side;
-
-        // доод оройнууд
-        x2 = x1 - side / 2;
-        y2 = y1 - h;
-
-        x3 = x1 + side / 2;
-        y3 = y1 - h;
-    }
-
-    // талбай
+    // талбай бодох функц
     double area() override {
-        return (sqrt(3) / 4) * side * side;
+        return (sqrt(3) / 4) * side * side; // тэнцүү талт гурвалжин
     }
 
-    // периметр
+    // периметр бодох функц
     double perimeter() override {
-        return 3 * side;
+        return 3 * side; // 3a
     }
 };
 
 
-// MAIN
+// MAIN ФУНКЦ
 
 int main() {
 
-    // монгол текст зөв гаргах
-    SetConsoleOutputCP(65001);
-    SetConsoleCP(65001);
+    // олон объект үүсгэж байна
 
-    // объектууд
-    Circle  c1(0, 0, 3);    // радиус 3
-    Circle  c2(1, 1, 5);    // радиус 5
-    Circle  c3(2, 2, 1.5);  // радиус 1.5
+    // 3 ширхэг Circle объект
+    Circle  c1(0, 0, 3);
+    Circle  c2(1, 1, 5);
+    Circle  c3(2, 2, 1.5);
 
-    Square  s1(0, 0, 4);    // тал 4
-    Square  s2(1, 0, 2);    // тал 2
-    Square  s3(0, 1, 6);    // тал 6
+    // 3 ширхэг Square объект
+    Square  s1(0, 0, 4);
+    Square  s2(1, 0, 2);
+    Square  s3(0, 1, 6);
 
-    Triangle t1(0, 0, 5);   // тал 5
-    Triangle t2(1, 0, 3);   // тал 3
-    Triangle t3(0, 1, 7);   // тал 7
+    // 3 ширхэг Triangle объект
+    Triangle t1(0, 0, 5);
+    Triangle t2(1, 0, 3);
+    Triangle t3(0, 1, 7);
 
-    // input авах
-    c.input();
-    s.input();
-    t.input();
+    // өөр өөр классын объектуудыг нэг төрөл (Shape*) болгон хадгалж байна
+    Shape* shapes[9] = {
+        &c1, &c2, &c3,
+        &s1, &s2, &s3,
+        &t1, &t2, &t3
+    };
 
-    // Shape pointer массив
-    Shape* shapes[9] = { &c1, &c2, &c3, &s1, &s2, &s3, &t1, &t2, &t3 };
-
-    // талбайгаар өсөхөөр эрэмбэлэх 
+    // талбайгаар эрэмбэлэх 
+    // lambda функц ашиглаж area()-аар харьцуулж байна
     sort(shapes, shapes + 9, [](Shape* a, Shape* b) {
-        return a->area() < b->area();
+        return a->area() < b->area(); // багаас их
     });
 
-    // объектуудын хаяг оноох
-    shapes[0] = &c;
-    shapes[1] = &s;
-    shapes[2] = &t;
+    // үр дүн хэвлэх
+    cout << "\nResults (sorted by area):\n";
 
-    cout << "\n RESULTS \n";
+    // бүх объектуудыг давталтаар хэвлэж байна
+    for (int i = 0; i < 9; i++) {
 
-    // бүх дүрсийг нэг циклээр ажиллуулах
-    for (int i = 0; i < 3; i++) {
-
-        // нэр хэвлэх
+        // дүрсний нэр
         cout << shapes[i]->getName() << endl;
 
-        // талбай хэвлэх
+        // талбай
         cout << "Area: " << shapes[i]->area() << endl;
 
-        // периметр хэвлэх
+        // периметр
         cout << "Perimeter: " << shapes[i]->perimeter() << endl;
 
-        cout << "------------------" << endl;
+        // ялгах шугам
+        cout << "------------------\n";
     }
 
-    return 0; // програм дууслаа
+    // програм амжилттай дууслаа
+    return 0;
 }
